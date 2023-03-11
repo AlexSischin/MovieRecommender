@@ -49,6 +49,21 @@ Genres:
 
 Ratings are made on a 5-star scale with half-star increments (0.5 stars - 5.0 stars).
 
+### tags.csv
+
+**Size:** 1,108,997 x 4
+
+**Data examples:**
+
+| userId | movieId | tag                       | timestamp  |
+|--------|---------|---------------------------|------------|
+| 14     | 110     | epic                      | 1443148538 |
+| 50924  | 46976   | Dustin Hoffman            | 1248086227 |
+| 152473 | 2551    | twins/inter-related lives | 1264325551 |
+| 193831 | 175     | ChloÃ« Sevigny            | 1388598582 |
+| 240383 | 106749  | seen more than once       | 1500708928 |
+| 271131 | 64993   | 01/10                     | 1264325551 |
+
 ### genome-tags.csv
 
 **Size:** 1,129 x 2
@@ -71,21 +86,6 @@ represented by tags (atmospheric thought-provoking realistic etc.). The tag geno
 algorithm on user-contributed content including tags ratings and textual reviews.
 
 [genome-paper]: http://files.grouplens.org/papers/tag_genome.pdf
-
-### tags.csv
-
-**Size:** 1,108,997 x 4
-
-**Data examples:**
-
-| userId | movieId | tag                       | timestamp  |
-|--------|---------|---------------------------|------------|
-| 14     | 110     | epic                      | 1443148538 |
-| 50924  | 46976   | Dustin Hoffman            | 1248086227 |
-| 152473 | 2551    | twins/inter-related lives | 1264325551 |
-| 193831 | 175     | ChloÃ« Sevigny            | 1388598582 |
-| 240383 | 106749  | seen more than once       | 1500708928 |
-| 271131 | 64993   | 01/10                     | 1264325551 |
 
 ### genome-scores.csv
 
