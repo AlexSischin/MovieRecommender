@@ -98,6 +98,10 @@ algorithm on user-contributed content including tags ratings and textual reviews
 | 1       | 1     | 0.029000000000000026 |
 | 55159   | 603   | 0.657                |
 
+# Goal
+
+Build a recommendation system.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
