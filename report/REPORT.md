@@ -14,7 +14,7 @@ MovieLens dataset consists of the following files:
 | 144078  | Kleinhoff Hotel (1977)      | (no genres listed)                                              |
 | 146854  | Dov'è la Libertà...? (1954) | Comedy                                                          |
 
-Genres:
+**Genres:**
 
 * Action
 * Adventure
@@ -100,7 +100,7 @@ algorithm on user-contributed content including tags ratings and textual reviews
 
 # Goal
 
-Build a recommendation system.
+Build a recommender system.
 
 # Workflow
 
