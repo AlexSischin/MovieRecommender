@@ -4,7 +4,7 @@ MovieLens dataset consists of the following files:
 
 ### movies.csv
 
-**Size:** 58,871 x 3
+**Size:** 58,098 x 3
 
 **Data examples:**
 
@@ -66,7 +66,7 @@ Ratings are made on a 5-star scale with half-star increments (0.5 stars - 5.0 st
 
 ### genome-tags.csv
 
-**Size:** 1,129 x 2
+**Size:** 1,128 x 2
 
 **Data examples:**
 
