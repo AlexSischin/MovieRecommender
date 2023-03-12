@@ -102,6 +102,95 @@ algorithm on user-contributed content including tags ratings and textual reviews
 
 Build a recommendation system.
 
+# Workflow
+
+## Dataset inspection
+
+Script:
+
+```shell
+venv/Scripts/python.exe dataset_overview.py
+```
+
+### movies.csv
+
+Brief info:
+
+```text
+Movies count: 58098
+Movies with unique ID count: 58098
+Movies with unique title count: 58020
+Min movie ID: 1
+Max movie ID: 193886
+Genres (20): {'Thriller', 'Romance', 'Musical', 'Adventure', 'Children', 'War', 'Sci-Fi', 'Animation', 'Action', 'IMAX',
+'Mystery', '(no genres listed)', 'Drama', 'Comedy', 'Horror', 'Film-Noir', 'Fantasy', 'Crime', 'Documentary', 'Western'}
+```
+
+Notes:
+
+* Extra genre: IMAX. There are several movies with it in the dataset.
+* Titles repeat, but it won't affect results because it's very rare.
+
+### ratings.csv
+
+Brief info:
+
+```text
+Unique scores: [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5 5. ]
+Number of unique movies: 53889
+```
+
+Notes:
+
+* At least 7.2% of movies don't have ratings
+
+### tags.csv
+
+Brief info:
+
+```text
+Number of unique tags (case insensitive): 66981
+Number of unique movies: 45981
+```
+
+Notes:
+
+* At least 20.8% of movies don't have tags.
+* Timestamp is irrelevant.
+
+### genome-tags.csv
+
+Brief info:
+
+```text
+Number of tags absent in ratings.csv (case insensitive): 0
+```
+
+Notes:
+
+* all genome tags are present in ratings.csv if comparing case-insensitively.
+
+### genome-scores.csv
+
+Brief info:
+
+```text
+Unique movie number: 13176
+Number of scores with tag ids absent in genome-tags.csv: 0
+Min relevance: 0.0002499999999999
+Max relevance: 1.0
+```
+
+Genome score distribution:
+
+![img.png](img.png)
+
+Notes:
+
+* At least 77.3% of movies don't have genome scores.
+* All genome scores have string representation
+* All genome scores' string representations are present in ratings.csv if comparing case-insensitively.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
