@@ -100,7 +100,8 @@ algorithm on user-contributed content including tags ratings and textual reviews
 
 # Goal
 
-Build a recommender system.
+Build a recommender system, whose optimization problem is predicting ratings. Users will be recommended movies with the
+highest predicted ratings.
 
 # Workflow
 
