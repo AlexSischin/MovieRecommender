@@ -13,4 +13,9 @@ def read_ratings() -> tuple[csr_array, csr_array, csr_array]:
     train_set = csr_array((train_val, (train_row, train_col)))
     dev_set = csr_array((dev_val, (dev_row, dev_col)))
     test_set = csr_array((test_val, (test_row, test_col)))
+    movie_shape = max([s.shape[0] for s in [train_set, dev_set, test_set]])
+    user_shape = max([s.shape[1] for s in [train_set, dev_set, test_set]])
+    train_set.resize(movie_shape, user_shape)
+    dev_set.resize(movie_shape, user_shape)
+    test_set.resize(movie_shape, user_shape)
     return train_set, dev_set, test_set
