@@ -260,7 +260,10 @@ general. Apparently, we could improve evaluation precision by picking different 
 optimizers, etc., but it would require too much time to retrain the model.
 
 The parameters we've trained are likely to give substantial info about movies and users, so we'll try to **embed them
-in the final content-based algorithm**.
+in the final content-based algorithm**. They are saved in:
+
+* _dataset/collaborative_features/movies.csv_
+* _dataset/collaborative_features/users.csv_
 
 # References
 
