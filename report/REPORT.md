@@ -219,6 +219,49 @@ We will try to take advantage of all of this data, but progressively. The genera
    of all movie embeddings, that current user has rated, and find movies that are closest to resulting vector.
 4. **Combine the recommenders** listed above into a single content-based recommender.
 
+## Collaborative filtering
+
+Optimization problem:
+
+![img_2.png](img_2.png)
+
+We need only ratings.csv for this one. Data is basically a sparse matrix with movies as rows, users as columns and
+ratings as values. Max user id is 283229 and max movie id is 193887, so it has size of 283,229 x 193,887.
+
+Vanilla collaborative filtering algorithm suggests using the whole dataset for each gradient descent iteration. This is
+a problem because the algorithm creates a dense estimate matrix which has the same size, in order to compute the cost.
+It would require more than 204 Gb of memory.
+
+To solve this problem, we're going to split the dataset into square mini-batches, as shown below:
+
+![img_1.png](img_1.png)
+
+Then, we'll basically apply mini-batch gradient descent.
+
+The ratings will be split into training, development and test sets with ratios 50:25:25, respectively. These splits will
+be used for training, tuning, and evaluating other recommender system implementations as well.
+
+Another problem of this algorithm is likely to be too computationally expensive. There's not much we could do about it,
+so let's implement it and test without detailed analysis, in order to find out whether it's even worth spending our
+time.
+
+Results:
+
+```text
+Time elapsed for training and evaluating: 101.1 minutes
+MSE (train): 1.0948103177789987
+MSE (dev): 1.1399717581768327
+```
+
+OMG, it took nearly 2 hours to go through 15 epochs of training! We're not going to repeat this process ever again. MSE
+is surprisingly good, given that collaborative filtering doesn't consider any data but ratings, dataset is sparse,
+hyperparameters were picked at almost at random, feature number was quite random, and our algorithm is custom in
+general. Apparently, we could improve evaluation precision by picking different hyperparams, trying different
+optimizers, etc., but it would require too much time to retrain the model.
+
+The parameters we've trained are likely to give substantial info about movies and users, so we'll try to **embed them
+in the final content-based algorithm**.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
