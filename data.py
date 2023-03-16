@@ -2,6 +2,9 @@ import pandas as pd
 from scipy.sparse import csr_array
 from sklearn.model_selection import train_test_split
 
+movie_coll_features_path = 'dataset/collaborative_features/movies.csv'
+user_coll_features_path = 'dataset/collaborative_features/users.csv'
+
 
 def read_ratings() -> tuple[csr_array, csr_array, csr_array]:
     df = pd.read_csv('dataset/ratings.csv')
@@ -19,3 +22,16 @@ def read_ratings() -> tuple[csr_array, csr_array, csr_array]:
     dev_set.resize(movie_shape, user_shape)
     test_set.resize(movie_shape, user_shape)
     return train_set, dev_set, test_set
+
+
+def export_collaborative_features(X, W, b):
+    movie_df = pd.DataFrame(X)
+    movie_df.columns = [f'f_{i}' for i in range(X.shape[1])]
+    movie_df.to_csv(movie_coll_features_path, index=False)
+
+    user_w_df = pd.DataFrame(W)
+    user_w_df.columns = [f'w_{i}' for i in range(W.shape[1])]
+    user_b_df = pd.DataFrame(b)
+    user_b_df.columns = ['b']
+    user_df = pd.concat([user_w_df, user_b_df])
+    user_df.to_csv(user_coll_features_path, index=False)

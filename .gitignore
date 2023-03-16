@@ -1,2 +1,3 @@
-dataset/**
+dataset/*
 !dataset/README.txt
+!dataset/collaborative_features
