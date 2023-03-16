@@ -221,6 +221,10 @@ We will try to take advantage of all of this data, but progressively. The genera
 
 ## Collaborative filtering
 
+For this algorithm we need only one file:
+
+* _dataset/ratings.csv_
+
 Optimization problem:
 
 ![img_2.png](img_2.png)
