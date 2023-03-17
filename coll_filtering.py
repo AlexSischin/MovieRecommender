@@ -5,7 +5,7 @@ import tensorflow as tf
 from scipy.sparse import csr_matrix
 from tensorflow import GradientTape
 
-from data import read_ratings, export_collaborative_features
+from data import read_ratings_as_sparse_matrix, export_collaborative_features
 
 
 class CollaborativeRecommender(tf.Module):
@@ -116,7 +116,7 @@ def get_slices(A_lim: np.int64, a: np.int64, b: np.int64) -> tuple[np.ndarray, n
 
 
 def main():
-    train_ratings, dev_ratings, test_ratings = read_ratings()
+    train_ratings, dev_ratings, test_ratings = read_ratings_as_sparse_matrix()
     movie_allocation_number = max([s.shape[0] for s in [train_ratings, dev_ratings, test_ratings]])
     user_allocation_number = max([s.shape[1] for s in [train_ratings, dev_ratings, test_ratings]])
     feature_number = 10
