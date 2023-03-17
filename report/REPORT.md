@@ -110,7 +110,7 @@ highest predicted ratings.
 Script:
 
 ```shell
-venv/Scripts/python.exe dataset_overview.py
+dataset_overview.py
 ```
 
 ### movies.csv
