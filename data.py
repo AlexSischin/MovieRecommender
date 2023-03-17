@@ -6,10 +6,15 @@ movie_coll_features_path = 'dataset/collaborative_features/movies.csv'
 user_coll_features_path = 'dataset/collaborative_features/users.csv'
 
 
-def read_ratings_as_sparse_matrix() -> tuple[csr_array, csr_array, csr_array]:
+def read_ratings() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     df = pd.read_csv('dataset/ratings.csv')
     train_df, other_df = train_test_split(df, train_size=0.5, random_state=123, shuffle=True)
     dev_df, test_df = train_test_split(other_df, train_size=0.5, random_state=123, shuffle=True)
+    return train_df, dev_df, test_df
+
+
+def read_ratings_as_sparse_matrix() -> tuple[csr_array, csr_array, csr_array]:
+    train_df, dev_df, test_df = read_ratings()
     train_row, train_col, train_val = train_df['movieId'], train_df['userId'], train_df['rating']
     dev_row, dev_col, dev_val = dev_df['movieId'], dev_df['userId'], dev_df['rating']
     test_row, test_col, test_val = test_df['movieId'], test_df['userId'], test_df['rating']
