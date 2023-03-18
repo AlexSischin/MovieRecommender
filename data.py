@@ -111,7 +111,7 @@ def generate_and_export_content_features():
 
 
 def read_content_features():
-    content_df = pd.read_parquet(content_features_path, engine='fastparquet')
+    content_df = pd.read_parquet(content_features_path, engine='pyarrow')
     grouped_content_df = content_df.groupby('set')
 
     train_df = grouped_content_df.get_group('train')
