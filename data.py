@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 movie_coll_features_path = 'dataset/collaborative_features/movies.csv'
 user_coll_features_path = 'dataset/collaborative_features/users.csv'
-content_features_path = 'dataset/content_features/ratings.csv'
+content_features_path = 'dataset/content_features/ratings.parquet'
 
 
 def read_ratings(sort=False, drop_irrelevant_cols=False) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -107,4 +107,15 @@ def generate_and_export_content_features():
     tmp = tmp.sort_values(by=['set', 'movieId', 'userId'])
     united_df = tmp
 
-    united_df.to_csv(content_features_path, index=False)
+    united_df.to_parquet(content_features_path, index=False, engine='fastparquet', compression=None)
+
+
+def read_content_features():
+    content_df = pd.read_parquet(content_features_path, engine='fastparquet')
+    grouped_content_df = content_df.groupby('set')
+
+    train_df = grouped_content_df.get_group('train')
+    dev_df = grouped_content_df.get_group('dev')
+    test_df = grouped_content_df.get_group('test')
+
+    return train_df, dev_df, test_df
