@@ -269,6 +269,44 @@ in the final content-based algorithm**. They are saved in:
 * _dataset/collaborative_features/movies.csv_
 * _dataset/collaborative_features/users.csv_
 
+## Content-based filtering
+
+For this one we need two data files:
+
+* _dataset/ratings.csv_
+* _dataset/movies.csv_
+
+General model:
+
+![img_3.png](img_3.png)
+
+Optimization problem:
+
+![img_4.png](img_4.png)
+
+First of all, we will preprocess data, and save resulting table to a file, in order to speed up data loading:
+
+| set   | userId | movieId | rating | title                           | mean_rating | genre_(no genres listed) | ... | genre_Western | genre_(no genres listed)_mean_rating | ... | genre_Western_mean_rating |
+|-------|--------|---------|--------|---------------------------------|-------------|--------------------------|-----|---------------|--------------------------------------|-----|---------------------------|
+| dev   | 4      | 1       | 4.0    | Toy Story (1995)                | 3.89        | 0                        | ... | 0             | 3.53                                 | ... | 3.2                       |
+| test  | 27475  | 94431   | 3.0    | "Ella Lola, a la Trilby (1898)" | 2.5         | 1                        | ... | 0             | 4.67                                 | ... | 3.82                      |
+| train | 263856 | 173941  | 2.5    | Atomic Blonde (2017)            | 3.28        | 0                        | ... | 0             | 2.25                                 | ... | 3.9                       |
+
+_dataset/content_features/ratings.csv_
+
+Script:
+
+```shell
+preprocess_content.py
+```
+
+The most relevant information is genre of movie and genre user's preferences. They are represented by features
+_'genre_XXX'_ and _'genre_XXX_mean_rating'_, respectively. Also, mean rating for every movie is helpful, because some
+movies are just bad, and should not be recommended to anyone.
+
+All floating point numbers were rounded to 2 decimals, in order to reduce file size twice. It won't hurt our predictions
+much.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
