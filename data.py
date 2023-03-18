@@ -5,7 +5,38 @@ from sklearn.model_selection import train_test_split
 
 movie_coll_features_path = 'dataset/collaborative_features/movies.csv'
 user_coll_features_path = 'dataset/collaborative_features/users.csv'
-content_features_path = 'dataset/content_features/ratings.parquet'
+
+train_movie_features_path = 'dataset/content_features/train/movies.parquet'
+train_user_features_path = 'dataset/content_features/train/users.parquet'
+train_rating_path = 'dataset/content_features/train/ratings.parquet'
+train_meta_path = 'dataset/content_features/train/meta.parquet'
+
+dev_movie_features_path = 'dataset/content_features/dev/movies.parquet'
+dev_user_features_path = 'dataset/content_features/dev/users.parquet'
+dev_rating_path = 'dataset/content_features/dev/ratings.parquet'
+dev_meta_path = 'dataset/content_features/dev/meta.parquet'
+
+test_movie_features_path = 'dataset/content_features/test/movies.parquet'
+test_user_features_path = 'dataset/content_features/test/users.parquet'
+test_rating_path = 'dataset/content_features/test/ratings.parquet'
+test_meta_path = 'dataset/content_features/test/meta.parquet'
+
+MOVIE_FEATURES = ['mean_rating', 'genre_(no genres listed)', 'genre_Action', 'genre_Adventure', 'genre_Animation',
+                  'genre_Children', 'genre_Comedy', 'genre_Crime', 'genre_Documentary', 'genre_Drama', 'genre_Fantasy',
+                  'genre_Film-Noir', 'genre_Horror', 'genre_IMAX', 'genre_Musical', 'genre_Mystery', 'genre_Romance',
+                  'genre_Sci-Fi', 'genre_Thriller', 'genre_War', 'genre_Western']
+
+USER_FEATURES = ['genre_(no genres listed)_mean_rating', 'genre_Action_mean_rating', 'genre_Adventure_mean_rating',
+                 'genre_Animation_mean_rating', 'genre_Children_mean_rating', 'genre_Comedy_mean_rating',
+                 'genre_Crime_mean_rating', 'genre_Documentary_mean_rating', 'genre_Drama_mean_rating',
+                 'genre_Fantasy_mean_rating', 'genre_Film-Noir_mean_rating', 'genre_Horror_mean_rating',
+                 'genre_IMAX_mean_rating', 'genre_Musical_mean_rating', 'genre_Mystery_mean_rating',
+                 'genre_Romance_mean_rating', 'genre_Sci-Fi_mean_rating', 'genre_Thriller_mean_rating',
+                 'genre_War_mean_rating', 'genre_Western_mean_rating']
+
+META_FEATURES = ['movieId', 'title', 'userId']
+
+RATING_FEATURE = ['rating']
 
 
 def read_ratings(sort=False, drop_irrelevant_cols=False) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -88,34 +119,71 @@ def calc_user_mean_rating(rating_df: pd.DataFrame, movie_genres_df: pd.DataFrame
     return mean_rating_df
 
 
+def combine_features(df, movie_titles_df, movie_mean_rating_df, movie_genres_df, user_mean_rating_df):
+    df = df.merge(movie_titles_df, left_on='movieId', right_index=True)
+    df = df.merge(movie_mean_rating_df, left_on='movieId', right_index=True)
+    df = df.merge(movie_genres_df, left_on='movieId', right_index=True)
+    df = df.merge(user_mean_rating_df, left_on='userId', right_index=True)
+    df = df.sort_values(by=['userId', 'movieId'])
+    return df
+
+
+def export_to_parquet(data, path, precision=2):
+    data = data.round(precision)
+    data.to_parquet(path, index=False, engine='fastparquet', compression=None)
+
+
 def generate_and_export_content_features():
     rating_train_df, rating_dev_df, rating_test_df = read_ratings(sort=True, drop_irrelevant_cols=True)
     movies_df = read_movies()
-    movie_genres_df = encode_movie_genres(movies_df)
-    movie_titles_df = get_movie_titles(movies_df)
-    movie_mean_rating_df = calc_movie_mean_rating(rating_train_df)
-    user_mean_rating_df = calc_user_mean_rating(rating_train_df, movie_genres_df)
+    genres_df = encode_movie_genres(movies_df)
+    titles_df = get_movie_titles(movies_df)
+    mean_rating_df = calc_movie_mean_rating(rating_train_df)
+    user_mean_rating_df = calc_user_mean_rating(rating_train_df, genres_df)
 
-    tmp = pd.concat([rating_train_df, rating_dev_df, rating_test_df],
-                    keys=['train', 'dev', 'test'], names=['set', 'id'])
-    tmp = tmp.reset_index(level='set')
-    tmp = tmp.merge(movie_titles_df, left_on='movieId', right_index=True)
-    tmp = tmp.merge(movie_mean_rating_df, left_on='movieId', right_index=True)
-    tmp = tmp.merge(movie_genres_df, left_on='movieId', right_index=True)
-    tmp = tmp.merge(user_mean_rating_df, left_on='userId', right_index=True)
-    tmp = tmp.round(2)
-    tmp = tmp.sort_values(by=['set', 'movieId', 'userId'])
-    united_df = tmp
+    train_df = combine_features(rating_train_df, titles_df, mean_rating_df, genres_df, user_mean_rating_df)
+    dev_df = combine_features(rating_dev_df, titles_df, mean_rating_df, genres_df, user_mean_rating_df)
+    test_df = combine_features(rating_test_df, titles_df, mean_rating_df, genres_df, user_mean_rating_df)
 
-    united_df.to_parquet(content_features_path, index=False, engine='fastparquet', compression=None)
+    export_to_parquet(train_df[MOVIE_FEATURES], train_movie_features_path)
+    export_to_parquet(train_df[USER_FEATURES], train_user_features_path)
+    export_to_parquet(train_df[RATING_FEATURE], train_rating_path)
+    export_to_parquet(train_df[META_FEATURES], train_meta_path)
+
+    export_to_parquet(dev_df[MOVIE_FEATURES], dev_movie_features_path)
+    export_to_parquet(dev_df[USER_FEATURES], dev_user_features_path)
+    export_to_parquet(dev_df[RATING_FEATURE], dev_rating_path)
+    export_to_parquet(dev_df[META_FEATURES], dev_meta_path)
+
+    export_to_parquet(test_df[MOVIE_FEATURES], test_movie_features_path)
+    export_to_parquet(test_df[USER_FEATURES], test_user_features_path)
+    export_to_parquet(test_df[RATING_FEATURE], test_rating_path)
+    export_to_parquet(test_df[META_FEATURES], test_meta_path)
 
 
-def read_content_features():
-    content_df = pd.read_parquet(content_features_path, engine='pyarrow')
-    grouped_content_df = content_df.groupby('set')
+def read_parquet(file, engine='pyarrow'):
+    return pd.read_parquet(file, engine=engine)
 
-    train_df = grouped_content_df.get_group('train')
-    dev_df = grouped_content_df.get_group('dev')
-    test_df = grouped_content_df.get_group('test')
 
-    return train_df, dev_df, test_df
+def read_train_data(load_meta=False):
+    movie_df = read_parquet(train_movie_features_path)
+    user_df = read_parquet(train_user_features_path)
+    rating_df = read_parquet(train_rating_path)
+    meta_df = read_parquet(train_meta_path) if load_meta else None
+    return movie_df, user_df, rating_df, meta_df
+
+
+def read_dev_data(load_meta=False):
+    movie_df = read_parquet(dev_movie_features_path)
+    user_df = read_parquet(dev_user_features_path)
+    rating_df = read_parquet(dev_rating_path)
+    meta_df = read_parquet(dev_meta_path) if load_meta else None
+    return movie_df, user_df, rating_df, meta_df
+
+
+def read_test_data(load_meta=False):
+    movie_df = read_parquet(test_movie_features_path)
+    user_df = read_parquet(test_user_features_path)
+    rating_df = read_parquet(test_rating_path)
+    meta_df = read_parquet(test_meta_path) if load_meta else None
+    return movie_df, user_df, rating_df, meta_df

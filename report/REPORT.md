@@ -284,28 +284,72 @@ Optimization problem:
 
 ![img_4.png](img_4.png)
 
-First of all, we will preprocess data, and save resulting table to a file, in order to speed up data loading:
+To start, we need to process data and develop features. For movies, we can specify their genre and mean rating. Genre
+is relevant because different people like different genres, and mean rating is relevant because we want to recommend the
+best movies in every genre.
 
-| set   | userId | movieId | rating | title                           | mean_rating | genre_(no genres listed) | ... | genre_Western | genre_(no genres listed)_mean_rating | ... | genre_Western_mean_rating |
-|-------|--------|---------|--------|---------------------------------|-------------|--------------------------|-----|---------------|--------------------------------------|-----|---------------------------|
-| dev   | 4      | 1       | 4.0    | Toy Story (1995)                | 3.89        | 0                        | ... | 0             | 3.53                                 | ... | 3.2                       |
-| test  | 27475  | 94431   | 3.0    | "Ella Lola, a la Trilby (1898)" | 2.5         | 1                        | ... | 0             | 4.67                                 | ... | 3.82                      |
-| train | 263856 | 173941  | 2.5    | Atomic Blonde (2017)            | 3.28        | 0                        | ... | 0             | 2.25                                 | ... | 3.9                       |
+About users, we know only their genre preferences, which is very good. But in practice, it would be great to also have
+info on their age, sex, location, etc. Unfortunately, we don't.
 
-_dataset/content_features/ratings.csv_
+All the data we will process will be saved to file system in order to speed up further development. List of files:
+
+* _dataset/content_features/train/movies.parquet_
+* _dataset/content_features/train/users.parquet_
+* _dataset/content_features/train/ratings.parquet_
+* _dataset/content_features/train/meta.parquet_
+* _dataset/content_features/dev/movies.parquet_
+* _dataset/content_features/dev/users.parquet_
+* _dataset/content_features/dev/ratings.parquet_
+* _dataset/content_features/dev/meta.parquet_
+* _dataset/content_features/test/movies.parquet_
+* _dataset/content_features/test/users.parquet_
+* _dataset/content_features/test/ratings.parquet_
+* _dataset/content_features/test/meta.parquet_
+
+Quick notes:
+
+* Data is split into train, dev and test in advance for result consistency, load speed and memory efficiency.
+* Data is split in different pieces, so we can not load meta information for training unless it's needed. And we don't
+  have to split data every test iteration. Each file has the same amount of rows, and the rows correspond to each other.
+* We use parquet without compression in order to improve loading speed and RAM memory efficiency.
+
+| mean_rating | genre_(no genres listed) | ... | genre_Western |
+|-------------|--------------------------|-----|---------------|
+| 3.97        | 0                        | ... | 0             |
+| 2.8         | 0                        | ... | 0             |
+| 3.84        | 0                        | ... | 0             |
+
+_First 3 rows from file: dataset/content_features/train/movies.parquet_
+
+| genre_(no genres listed)_mean_rating | ... | genre_Western_mean_rating |
+|--------------------------------------|-----|---------------------------|
+| 3.53                                 | ... | 4                         |
+| 3.53                                 | ... | 4                         |
+| 3.53                                 | ... | 4                         |
+
+_First 3 rows from file: dataset/content_features/train/users.parquet_
+
+| rating |
+|--------|
+| 3.5    |
+| 1.5    |
+| 4.5    |
+
+_File: dataset/content_features/train/ratings.parquet_
+
+| movieId | title                                            | userId |
+|---------|--------------------------------------------------|--------|
+| 307     | Three Colors: Blue (Trois couleurs: Bleu) (1993) | 1      |
+| 1091    | Weekend at Bernie's (1989)                       | 1      |
+| 1257    | Better Off Dead... (1985)                        | 1      |
+
+_File: dataset/content_features/train/meta.parquet_
 
 Script:
 
 ```shell
 preprocess_content.py
 ```
-
-The most relevant information is genre of movie and genre user's preferences. They are represented by features
-_'genre_XXX'_ and _'genre_XXX_mean_rating'_, respectively. Also, mean rating for every movie is helpful, because some
-movies are just bad, and should not be recommended to anyone.
-
-All floating point numbers were rounded to 2 decimals, in order to reduce file size twice. It won't hurt our predictions
-much.
 
 # References
 
