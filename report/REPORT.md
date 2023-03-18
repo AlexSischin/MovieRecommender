@@ -312,6 +312,10 @@ Quick notes:
 * Data is split in different pieces, so we can not load meta information for training unless it's needed. And we don't
   have to split data every test iteration. Each file has the same amount of rows, and the rows correspond to each other.
 * We use parquet without compression in order to improve loading speed and RAM memory efficiency.
+* We won't normalize data because all features have very similar magnitude, so it won't help much. But it is easier to
+  interpret and develop.
+* We won't normalize target because it's quite close to zero, and it won't improve performance much. But it is easier to
+  interpret and develop.
 
 | mean_rating | genre_(no genres listed) | ... | genre_Western |
 |-------------|--------------------------|-----|---------------|
