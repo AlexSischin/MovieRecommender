@@ -128,8 +128,7 @@ def combine_features(df, movie_titles_df, movie_mean_rating_df, movie_genres_df,
     return df
 
 
-def export_to_parquet(data, path, precision=2):
-    data = data.round(precision)
+def export_to_parquet(data, path):
     data.to_parquet(path, index=False, engine='fastparquet', compression=None)
 
 
@@ -144,6 +143,11 @@ def generate_and_export_content_features():
     train_df = combine_features(rating_train_df, titles_df, mean_rating_df, genres_df, user_mean_rating_df)
     dev_df = combine_features(rating_dev_df, titles_df, mean_rating_df, genres_df, user_mean_rating_df)
     test_df = combine_features(rating_test_df, titles_df, mean_rating_df, genres_df, user_mean_rating_df)
+
+    input_data_cols = MOVIE_FEATURES + USER_FEATURES + RATING_FEATURE
+    train_df[input_data_cols] = train_df[input_data_cols].round(2).astype(np.float16)
+    dev_df[input_data_cols] = dev_df[input_data_cols].round(2).astype(np.float16)
+    test_df[input_data_cols] = test_df[input_data_cols].round(2).astype(np.float16)
 
     export_to_parquet(train_df[MOVIE_FEATURES], train_movie_features_path)
     export_to_parquet(train_df[USER_FEATURES], train_user_features_path)
