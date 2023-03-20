@@ -272,17 +272,9 @@ MSE (train): 1.0948103177789987
 MSE (dev): 1.1399717581768327
 ```
 
-OMG, it took nearly 2 hours to go through 15 epochs of training! We're not going to repeat this process ever again. MSE
-indicates a minor prediction capability, which is expected since the algorithm doesn't consider any data but ratings,
-dataset is sparse, hyperparameters were picked at almost at random, feature number was quite random, and our algorithm
-is custom in general. We could significantly improve results by picking different hyperparams, but it would require too
-much time to retrain the model.
-
-The parameters we've trained contain a bit of info about movies and users, so we'll try to **embed them in the final
-content-based algorithm**. They are saved in:
-
-* _dataset/collaborative_features/movies.csv_
-* _dataset/collaborative_features/users.csv_
+OMG, it took nearly 2 hours to go through only 15 epochs of training! We're not going to repeat this process ever again.
+MSE indicates a minor prediction capability, and it's worse than our baseline, so this model is a junk. We definitely
+could improve its performance with hyper-tuning, but it would take too much time.
 
 ## Content-based filtering
 
