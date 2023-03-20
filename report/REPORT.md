@@ -362,6 +362,31 @@ Script:
 preprocess_content.py
 ```
 
+Now, let's build and train some models, so we'll have a starting point.
+
+Model _m1_:
+
+![](cb_filtering_m1.png)
+
+Model _m2_:
+
+![](cb_filtering_m2.png)
+
+Model _m3_:
+
+![](cb_filtering_m3.png)
+
+Model _m4_:
+
+![](cb_filtering_m4.png)
+
+Learning curves:
+
+![](cb_filtering_learning_curves.png)
+
+_m1_, _m2_, _m3_ perform pretty much the same, while _m4_ troubles to converge. Also, validation curves are quite
+unstable, so we should try to lower the learning rate.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
