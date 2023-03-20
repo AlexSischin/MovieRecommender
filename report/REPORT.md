@@ -219,6 +219,21 @@ We will try to take advantage of all of this data, but progressively. The genera
    of all movie embeddings, that current user has rated, and find movies that are closest to resulting vector.
 4. **Combine the recommenders** listed above into a single content-based recommender.
 
+## Baseline performance
+
+Before we start, we need set a baseline performance. We don't have an upper bound, but we can easily set a lower one.
+
+```text
+Target mean MSE: 1.137070328937405
+Target mean per movie MSE: 0.9333944174629749
+```
+
+```shell
+baseline_performance.py
+```
+
+These are MSEs of naive non-ML algorithms. **If an ML algorithm performs worse than one of the above, it is useless**.
+
 ## Collaborative filtering
 
 For this algorithm we need only one file:
