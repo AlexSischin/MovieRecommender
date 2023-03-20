@@ -384,8 +384,46 @@ Learning curves:
 
 ![](cb_filtering_learning_curves.png)
 
-_m1_, _m2_, _m3_ perform pretty much the same, while _m4_ troubles to converge. Also, validation curves are quite
-unstable, so we should try to lower the learning rate.
+Script:
+
+```shell
+cb_filtering.py
+```
+
+_m1_, _m2_, _m3_ perform pretty much the same, while they have different complexity. _m4_ is the most complex, and it
+fails to converge. Since, we don't see any benefits from big parameter number so far, we'll **get rid of _m4_**.
+
+Another thing to note is that curves look pretty rough and unstable, like optimizer overshoots minima, so we should try
+to **lower learning rate**.
+
+Training and evaluation curves have a growing gap between them, which indicates a **high variance** problem, so we
+will add more training examples to the training set.
+
+We will add new models with labels _m4_ and _m5_. They will have **cosine similarity** layer instead of vanilla dot
+product, so their predictions will be independent of movie and user representations' magnitude. The difference will be
+that **_m4_ uses ReLU activation, and _m5_ uses linear activation**. Relu gives only positive numbers, the cosine
+similarity cannot be negative. It is more intuitive, but maybe it will converge not as good, so we should try both
+options.
+
+Model _m4_:
+
+![](cb_filtering_v2_m4.png)
+
+Model _m5_:
+
+![](cb_filtering_v2_m5.png)
+
+Learning curves:
+
+![](cb_filtering_learning_curves_v2.png)
+
+Script:
+
+```shell
+cb_filtering_v2.py
+```
+
+Now, models converge much better, and **high variance** problem has become more apparent.
 
 # References
 
