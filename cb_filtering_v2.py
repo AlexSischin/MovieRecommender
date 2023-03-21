@@ -61,7 +61,7 @@ def build_model_3():
     return ks.Model(inputs=[movie_input, user_input], outputs=[output], name='m3')
 
 
-def build_model_4():
+def build_model_5():
     movie_input = ks.Input(21, name='movie')
     x = ks.layers.Dense(200, activation='relu')(movie_input)
     x = ks.layers.Dense(200, activation='relu')(x)
@@ -77,10 +77,10 @@ def build_model_4():
     x = dot_node([movie_node, user_node])
     output = tf.math.multiply(x, 5, 'scale')
 
-    return ks.Model(inputs=[movie_input, user_input], outputs=[output], name='m4')
+    return ks.Model(inputs=[movie_input, user_input], outputs=[output], name='m5')
 
 
-def build_model_5():
+def build_model_6():
     movie_input = ks.Input(21, name='movie')
     x = ks.layers.Dense(200, activation='relu')(movie_input)
     x = ks.layers.Dense(200, activation='relu')(x)
@@ -97,7 +97,7 @@ def build_model_5():
     x = tf.math.add(x, 1, 'shift')
     output = tf.math.multiply(x, 2.5, 'scale')
 
-    return ks.Model(inputs=[movie_input, user_input], outputs=[output], name='m5')
+    return ks.Model(inputs=[movie_input, user_input], outputs=[output], name='m6')
 
 
 def export_model_architectures(models):
@@ -119,10 +119,10 @@ def main():
     dev_user_df = dev_user_df[:dev_set_size]
     dev_rating_df = dev_rating_df[:dev_set_size]
 
-    models = [build_model_1(), build_model_2(), build_model_3(), build_model_4(), build_model_5()]
+    models = [build_model_1(), build_model_2(), build_model_3(), build_model_5(), build_model_6()]
     histories = []
 
-    export_model_architectures([m for m in models if m.name in ['m4', 'm5']])
+    export_model_architectures([m for m in models if m.name in ['m5', 'm6']])
 
     for model in models:
         print(f'Fitting: {model.name}'.center(98, '-'))
