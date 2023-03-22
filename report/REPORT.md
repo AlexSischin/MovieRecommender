@@ -425,6 +425,56 @@ cb_filtering_v2.py
 
 Now, models converge much better, and **high variance** problem has become more apparent.
 
+Using more training examples must help, but it would drastically slow down development.
+
+The other way is to decrease the parameter number, but practically, models with higher number of parameters tend to have
+less error than the ones with small parameter number. The drawback is that such models are more computationally
+expensive, but it's not crucial in this case, so let's try **regularization**.
+
+Also, e will discard _m1_, _m2_, and _m5_, because they tend to be slightly worse than their siblings. _m3_ and _m6_ are
+the best architectures of their kind.
+
+And finally, we'll plot the distributions of the predictions and ground truth values to have an insight of what the
+models do.
+
+Learning curves:
+
+![](cb_filtering_learning_curves_v3.png)
+
+Distributions:
+
+![](cb_filtering_distributions_v3.png)
+
+Script:
+
+```shell
+cb_filtering_v3.py
+```
+
+From the learning curves we see that the variance problem has gone.
+
+Distribution chart shows that _m3_ gives outputs between 1 and 6, which is a **bug**. We will fix it in the next
+iteration, but it won't improve performance much.
+
+What's more interesting, is that there's a mismatch between prediction and target distributions. Prediction
+distributions are smooth, while target distribution is ragged. Let's plot the distribution of targets only to have a
+clearer picture.
+
+![](dev_set_rating_distribution.png)
+
+```shell
+dev_set_rating_distribution.py
+```
+
+From the chart we see that the ratings tend to be integer. This can mean two things:
+
+* Intermediate ratings feature was introduced after some period of production use.
+* People tend to round ratings because it may be hard for them to tell precisely how much they liked a movie.
+
+In the both cases, this is just an irreducible **noise**.
+
+And lastly, both models look biased to intermediate ratings: they predict low and high scores very rarely.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
