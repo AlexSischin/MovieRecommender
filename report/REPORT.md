@@ -453,9 +453,6 @@ cb_filtering_v3.py
 
 From the learning curves we see that the variance problem has gone.
 
-Distribution chart shows that _m3_ gives outputs between 1 and 6, which is a **bug**. We will fix it in the next
-iteration, but it won't improve performance much.
-
 What's more interesting, is that there's a mismatch between prediction and target distributions. Prediction
 distributions are smooth, while target distribution is ragged. Let's plot the distribution of targets only to have a
 clearer picture.
@@ -473,7 +470,59 @@ From the chart we see that the ratings tend to be integer. This can mean two thi
 
 In the both cases, this is just an irreducible **noise**.
 
-And lastly, both models look biased to intermediate ratings: they predict low and high scores very rarely.
+Also, both models look biased to intermediate ratings: they predict low and high scores very rarely. But is it really a
+bias, or just a noise? Let's assume that there's no pattern in the data for extreme ratings. If this is the case, we'll
+be able to find many data points which are very close to each other, but have very different ratings. Let's investigate:
+
+Top 3 ambiguous datapoints:
+
+![](noisy_dev_data_top3.png)
+
+Bottom 3 ambiguous datapoints:
+
+![](noisy_dev_data_bottom3.png)
+
+```shell
+cb_filtering_dev_set_noise_analysis.py
+```
+
+Unbelievable! We took 1000 random ratings, and found 1000 of extremely ambiguous pairs of ratings. This sounds not much
+considering, that 1000 ratings form 500500 unique pairs, but the number of pairs is itself ambiguous. Bottom ratings
+still have difference of 2.5 which is a lot. Also, remember, that our performance metric is MSE, so the errors are also
+squared.
+
+Looking at the data, there's no way to say why one user rated a movie with 5 star, and other - with 0.5. They watched
+the same movie, or a movie of the same genre. They have very similar taste for genres as well. Maybe one of them is a
+fan of some actor, and other hates him. Maybe somebody watched the movie only because of a single character, and this
+character was killed. There may be many reasons for that fluctuation, and the initial data doesn't represent them.
+Therefore, we conclude that data has a lot of **noise**. It can be improved only by collecting more relevant info for
+users and movies.
+
+It's hard to tell what MSE to expect with such noise, but for me, all the noise we revealed in this iteration of
+development corresponds to the MSE we got. And it explains why models don't get better with increase of complexity. So,
+let's not waste time and move on to find the winner model.
+
+Note, that we'll use only a tiny fraction of the training data we have, so the models don't show their best performance.
+However, this is enough to compare them, and have a sneak peek at their performance. They're not ultimate, so we won't
+bother training them completely, and testing on the test set.
+
+Learning curves:
+
+![](cb_filtering_learning_curves_v4.png)
+
+Distributions:
+
+![](cb_filtering_distributions_v4.png)
+
+Script:
+
+```shell
+cb_filtering_v4.py
+```
+
+_m3_ model needs a little smaller learning rate, but it doesn't look that it will outperform _m6_, so **_m6_ is the
+winner**. Normalizing vectors helps. The best performance we've got from collaborative filtering algorithm, without
+using tags, on the dev set is just under 0.8.
 
 # References
 
