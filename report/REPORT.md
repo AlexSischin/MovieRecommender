@@ -214,9 +214,7 @@ We will try to take advantage of all of this data, but progressively. The genera
    features will help us later, hopefully.
 2. Build a **content-based filtering** recommender using one-hot encoded genre, average rating and user's average genre
    rating info.
-3. Build a **tag embeddings** recommender. We will find pre-trained embeddings on the internet. Then we will represent
-   every movie as a normalized weighted sum of its tags' embeddings. To do a recommendation, we will take a weighted sum
-   of all movie embeddings, that current user has rated, and find movies that are closest to resulting vector.
+3. Build a **content-based filtering** recommender using tag and title embeddings.
 4. **Combine the recommenders** listed above into a single content-based recommender.
 
 ## Baseline performance
