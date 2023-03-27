@@ -522,9 +522,71 @@ _m3_ model needs a little smaller learning rate, but it doesn't look that it wil
 winner**. Normalizing vectors helps. The best performance we've got from collaborative filtering algorithm, without
 using tags, on the dev set is just under 0.8.
 
+## Content-based filtering using embeddings
+
+Movies have title and tags. And users have movie ratings. This is the info we'll use.
+
+**Movies** will be represented as the average of the embeddings of the tags associated with it and the embedding of the
+title, weighted by the genome score and frequency. First, all the tags are assigned a genome score. If it's unknown,
+then the mean value is used. Then, we will sum up all the genome scores for every movie-tag pair. This sum can go to
+infinity, so we will shrink it using the following function:
+
+![](score_function.png)
+
+This way, if every user gives a movie the same tag, we consider this tag more important than others.
+
+Title may be irrelevant, for example, "The Green Mile" doesn't reflect what is movie about, but on the other hand,
+"Star Wars: Episode IV - A New Hope" tells us that the movie is likely to be about sci-fi and war. Title embedding
+could be especially helpful for movies without tags, for which the only info we have is the title. And there are 20.8%
+of movies without tags in the dataset.
+
+So, every movie is a vector, roughly representing its view from users' perspective.
+
+**Users** will be represented as the average of the embeddings of the movies they rated, weighted by rating. Therefore,
+every user is a vector, roughly representing his view of the "perfect" movie.
+
+We will use **pretrained [Glove][glove-project]** word embeddings, crawled from Twitter. Why?
+
+* pretrained - because the embeddings were trained on a much bigger dataset, thus they're more accurate and generalize
+  better for new tags;
+* GloVe - because it is simple, widely-used, accurate enough for our task and come with different dimensions;
+* Twitter - because tweets are usually written by regular folks, in the same way as tags, plus people may discuss
+  movies in Twitter.
+
+[glove-project]: https://nlp.stanford.edu/projects/glove/
+
+Now, let's preprocess the data. First of all, we need to normalize tags. Steps of normalization we'll perform:
+
+1. Cast to lowercase;
+2. Remove line breaks;
+3. Remove punctuation;
+4. Remove stop words;
+
+Notes:
+
+* We'll remove all the punctuation because pretrained embeddings don't have it.
+* We won't use stemming or lemmatization because pretrained embeddings didn't use them.
+* We won't remove numbers because they are likely to have a meaning, for instance, tags: "007" and
+  "september 11 2001". It's unlikely that someone would fit random numbers.
+* We will use Hierarchical Data Format for storing final data because it is optimized for big data and has convenient
+  API in Pandas.
+
+Script:
+
+```shell
+preprocess_tags.py
+preprocess_movie_embeddings.py
+preprocess_user_embeddings.py
+preprocess_embedding_data.py
+```
+
+Resulting file is _dataset/embedding_features/rating.h5_, and it is 78 GB.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
   ACM Trans. Interact. Intell. Syst. 2 3: 13:1–13:44. <https://doi.org/10.1145/2362394.2362395>
 * F. Maxwell Harper and Joseph A. Konstan. 2015. The MovieLens Datasets: History and Context. ACM Transactions on
   Interactive Intelligent Systems (TiiS) 5, 4: 19:1–19:19. <https://doi.org/10.1145/2827872>
+* Jeffrey Pennington, Richard Socher, and Christopher D. Manning. 2014. GloVe: Global Vectors for Word
+  Representation. <https://nlp.stanford.edu/pubs/glove.pdf>
