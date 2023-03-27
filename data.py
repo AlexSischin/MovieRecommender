@@ -484,3 +484,15 @@ def load_emb_data(dim: int, train_chunk_size: int, dev_chunk_size: int, test_chu
     dev_df_it = pd.read_hdf(embedding_data_path, f'/d{dim}/dev', chunksize=dev_chunk_size)
     test_df_it = pd.read_hdf(embedding_data_path, f'/d{dim}/dev', chunksize=test_chunk_size)
     return train_df_it, dev_df_it, test_df_it
+
+
+def load_samples(dim: int, train_sample_size: int, dev_sample_size: int, test_sample_size: int):
+    with pd.HDFStore(embedding_data_path) as store:
+        train_key, dev_key, test_key = f'/d{dim}/train', f'/d{dim}/dev', f'/d{dim}/dev'
+        train_ids = np.random.randint(0, store.get_storer(train_key).nrows, size=train_sample_size)
+        dev_ids = np.random.randint(0, store.get_storer(dev_key).nrows, size=dev_sample_size)
+        test_ids = np.random.randint(0, store.get_storer(test_key).nrows, size=test_sample_size)
+        train_sample_df = pd.read_hdf(store, train_key, where=train_ids)
+        def_sample_df = pd.read_hdf(store, dev_key, where=dev_ids)
+        test_sample_df = pd.read_hdf(store, test_key, where=test_ids)
+    return train_sample_df, def_sample_df, test_sample_df
