@@ -582,6 +582,29 @@ preprocess_embedding_data.py
 
 Resulting file is _dataset/embedding_features/rating.h5_, and it is 78 GB.
 
+Now, let's build a model to see how it works.
+
+Architecture:
+
+![](emb_cb_filtering_m1.png)
+
+Learning curves:
+
+![](emb_cb_filtering_learning_curves.png)
+
+Prediction distribution:
+
+![](emb_cb_filtering_distributions.png)
+
+The performance is lower than the baseline. There's no big gap between train and validation curves and the curves
+flatten out, therefore we deal with either high bias or high noise. If it's bias, we cannot reduce it, because the model
+is already extremely complex, in fact, my PC will run out of memory or would run too slow, if we'll add more parameters.
+And it's really unlikely that the model should be this complex. So, I allege that the problem is with **noise**.
+
+Noise can be caused by two reasons:
+1. Bug in the feature generation code.
+2. The embeddings are not useful as features for content-based recommender on this dataset.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
