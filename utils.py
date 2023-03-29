@@ -52,7 +52,7 @@ def get_cossim_matrix(in_arr: np.ndarray) -> np.ndarray:
     norms = np.linalg.norm(in_arr, axis=1)
     in_arr_norm = in_arr / norms[..., np.newaxis]
     similarity_map = in_arr_norm @ in_arr_norm.T
-    masked_sim_map = np.triu(similarity_map, 1)
+    masked_sim_map = similarity_map * (np.tril(np.ones(similarity_map.shape) * np.nan) + 1)
     return masked_sim_map
 
 
