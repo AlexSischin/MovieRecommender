@@ -416,7 +416,7 @@ def generate_and_export_user_embeddings():
 
 
 def generate_embedding_data(ratings_df: pd.DataFrame, mov_emb_df: pd.DataFrame, usr_emb_df: pd.DataFrame,
-                            include_unknown=True):
+                            include_unknown=True, drop_meta=False):
     mov_emb_df = mov_emb_df.copy().set_index('movieId')
     mov_emb_df.columns = [f'm_{c}' for c in mov_emb_df]
     usr_emb_df = usr_emb_df.copy().set_index('userId')
@@ -433,7 +433,8 @@ def generate_embedding_data(ratings_df: pd.DataFrame, mov_emb_df: pd.DataFrame, 
     else:
         df = pd.merge(ratings_df, mov_emb_df, left_on='movieId', right_index=True, how='inner')
         df = pd.merge(df, usr_emb_df, left_on='movieId', right_index=True, how='inner')
-    df.drop(columns=['movieId', 'userId'], inplace=True)
+    if drop_meta:
+        df.drop(columns=['movieId', 'userId'], inplace=True)
     return df
 
 

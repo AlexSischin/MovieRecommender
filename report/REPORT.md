@@ -580,7 +580,7 @@ preprocess_user_embeddings.py
 preprocess_embedding_data.py
 ```
 
-Resulting file is _dataset/embedding_features/rating.h5_, and it is 78 GB.
+Resulting file is _dataset/embedding_features/rating.h5_, and it is 80 GB.
 
 Now, let's build a model to see how it works.
 
