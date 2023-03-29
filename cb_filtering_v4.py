@@ -1,4 +1,3 @@
-import numpy as np
 import tensorflow as tf
 from tensorflow import keras as ks
 
@@ -54,11 +53,6 @@ def export_model_architectures(models):
     for model in models:
         ks.utils.plot_model(model, f'{model_architecture_path}/cb_filtering_v4_{model.name}.png', show_shapes=True,
                             show_layer_names=True, show_layer_activations=True)
-
-
-def compare_predictions_and_targets(pred: np.ndarray, true: np.ndarray):
-    print(f'Predictions: mean = {pred.mean()}; std = {pred.std()}]')
-    print(f'True: mean = {true.mean()}; std = {true.std()}')
 
 
 def main():
