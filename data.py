@@ -486,7 +486,8 @@ def load_emb_data(dim: int, train_chunk_size: int, dev_chunk_size: int, test_chu
     return train_df_it, dev_df_it, test_df_it
 
 
-def load_samples(dim: int, train_sample_size: int, dev_sample_size: int, test_sample_size: int):
+def load_samples(dim: int, train_sample_size: int, dev_sample_size: int, test_sample_size: int
+                 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     with pd.HDFStore(embedding_data_path) as store:
         train_key, dev_key, test_key = f'/d{dim}/train', f'/d{dim}/dev', f'/d{dim}/dev'
         train_ids = np.random.randint(0, store.get_storer(train_key).nrows, size=train_sample_size)
