@@ -46,3 +46,17 @@ def compare_distributions(true, predictions, bins=10, rwidth=0.7):
     ax.hist(data, bins=bins, density=True, color=cols, alpha=1, rwidth=rwidth, label=labels)
     fig.legend()
     plt.show()
+
+
+def get_cossim_matrix(in_arr: np.ndarray) -> np.ndarray:
+    norms = np.linalg.norm(in_arr, axis=1)
+    in_arr_norm = in_arr / norms[..., np.newaxis]
+    similarity_map = in_arr_norm @ in_arr_norm.T
+    masked_sim_map = np.triu(similarity_map, 1)
+    return masked_sim_map
+
+
+def argsort2d(matrix: np.ndarray) -> np.ndarray:
+    sorted_flat_ids = np.unravel_index(np.argsort(-matrix, axis=None), matrix.shape)
+    sorted_2d_ids = np.stack(sorted_flat_ids, axis=0).T
+    return sorted_2d_ids

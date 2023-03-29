@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 from data import read_dev_data
-
+from utils import get_cossim_matrix, argsort2d
 
 file_name = 'dataset/analysis/noisy_data.csv'
 
@@ -21,24 +21,10 @@ def get_sample_data(samples: int) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFr
     return meta_df, movie_df, user_df, rating_df
 
 
-def get_similarity_matrix(in_arr: np.ndarray) -> np.ndarray:
-    norms = np.linalg.norm(in_arr, axis=1)
-    in_arr_norm = in_arr / norms[..., np.newaxis]
-    similarity_map = in_arr_norm @ in_arr_norm.T
-    masked_sim_map = np.triu(similarity_map, 1)
-    return masked_sim_map
-
-
 def get_difference_matrix(out_arr: np.ndarray) -> np.ndarray:
     diff_map = np.abs(out_arr - out_arr.T)
     masked_diff_map = np.triu(diff_map, 1)
     return masked_diff_map
-
-
-def argsort2d(matrix: np.ndarray) -> np.ndarray:
-    sorted_flat_ids = np.unravel_index(np.argsort(-matrix, axis=None), matrix.shape)
-    sorted_2d_ids = np.stack(sorted_flat_ids, axis=0).T
-    return sorted_2d_ids
 
 
 def main():
@@ -55,7 +41,7 @@ def main():
 
     out_df_array = StandardScaler().fit_transform(rating_df.to_numpy())
 
-    sim_matrix = get_similarity_matrix(in_df_array)
+    sim_matrix = get_cossim_matrix(in_df_array)
     diff_matrix = get_difference_matrix(out_df_array)
     noise_score_matrix = diff_matrix * (sim_matrix + 1) ** 2
     sorted_points = argsort2d(noise_score_matrix)
