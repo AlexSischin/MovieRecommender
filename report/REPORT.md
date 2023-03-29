@@ -654,6 +654,12 @@ we don't have them.
 
 Movie and user **embeddings are useless for this dataset**.
 
+## Combined recommender
+
+The only model that has decent enough accuracy is the content-based filtering algorithm. Combining it with other models
+could ideally give minor accuracy benefits, but with a cost of a major resource consumption and development time
+increase. That's too much for this project, so we're calling this project done. Time to test!
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
