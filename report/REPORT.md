@@ -660,6 +660,41 @@ The only model that has decent enough accuracy is the content-based filtering al
 could ideally give minor accuracy benefits, but with a cost of a major resource consumption and development time
 increase. That's too much for this project, so we're calling this project done. Time to test!
 
+# Test
+
+First, we'll retrain the best model on a bigger dataset. _m6_ appeared to be the best, and it used 100,000 training
+examples. For the final test, we'll use 1,000,000 training examples.
+
+Previously I forgot to increase parameter number for _m6_. It would improve performance because for other models in this
+project it did. Also, I just realized that there's no need to regularize input and output layers because they don't
+contribute to model complexity as much as the hidden layer. So, **for the final test we will use _m7_**, which is the
+same as _m6_, except it has more weights, and it is unevenly regularized.
+
+Model _m7_:
+
+![](cb_filtering_v5_m7.png)
+
+Of course, we could use even more parameters and use more training examples, but we don't want to wait for training
+forever.
+
+Learning curve:
+
+![](final_train_learning_curve.png)
+
+Output distribution on test set:
+
+![](final_train_output_distribution.png)
+
+```shell
+train_recommender.py
+```
+
+Test set MSE: 0.795
+
+The error is better than the one we had on the development stage, which is great.
+
+Now, let's do a sanity check and try our model in real world.
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.
