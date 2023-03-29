@@ -602,8 +602,57 @@ is already extremely complex, in fact, my PC will run out of memory or would run
 And it's really unlikely that the model should be this complex. So, I allege that the problem is with **noise**.
 
 Noise can be caused by two reasons:
+
 1. Bug in the feature generation code.
 2. The embeddings are not useful as features for content-based recommender on this dataset.
+
+Let's find similar movies using their embeddings to see that movie they were calculated correctly. We cannot process all
+of them, so let's sample 5000 ratings. It will be a representative sampling, and if movie embeddings will not be totally
+messed up, this would mean that both movie embeddings and rating embeddings were calculated correctly, so we will solve
+two problems at once.
+
+Script:
+
+```shell
+analyze_movie_embeddings.py
+```
+
+Top 5 matches:
+
+![](movie_emb_match_top_5.png)
+
+Middle 5 "matches" / middle 5 "mismatches":
+
+![](movie_emb_match_mid_5.png)
+
+Bottom 5 matches / top 5 mismatches:
+
+![](movie_emb_match_bottom_5.png)
+
+Top 5 matches look great because movies have similar titles and share a lot of tags. It indicates, that there are no
+bugs in the movie embedding calculation code.
+
+Mid 5 matches still have very high cosine similarity, however in reality some movies are very different. For example:
+
+| Winter in Prostokvashino (1984)   | Evil Dead (2013)   |
+|-----------------------------------|--------------------|
+| ![](winter_in_prostokvashino.png) | ![](evil_dead.png) |
+
+Bottom 5 matches have cosine similarity close to 0. Vectors of these movies are almost perpendicular, not the opposite.
+Also, there's a tendency that movies with fewer tags are less similar.
+
+We will not check user embeddings, because their implementation is trivial, but the check itself isn't. The results we
+got already explain the error we have with embedding recommender.
+
+It follows from the foregoing that there are no bugs in the code for embedding generation or recommender. It's the
+embeddings themselves that are not descriptive enough. They work good for movies with a lot of tags, but that's the
+minor case. 21% of movies have no tags at all, and it requires no proof that most of the remaining ones only have few.
+Embeddings seem to be too complex for such small amount of data. And if we use 25d embeddings, then we also encounter
+the problem of high bias. Maybe we could improve performance by filtering out tags or training our own embeddings, but
+it doesn't worth the effort. The more realistic way to improve performance is to use reviews to compute embeddings, but
+we don't have them.
+
+Movie and user **embeddings are useless for this dataset**.
 
 # References
 
