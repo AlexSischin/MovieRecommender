@@ -695,6 +695,24 @@ The error is better than the one we had on the development stage, which is great
 
 Now, let's do a sanity check and try our model in real world.
 
+The first customer served by this system will be me. First, I'll encounter a cold start problem. When a customer has no
+ratings, there's no need in such a complex recommendation system. It's more reasonable to just show top-rated,
+top-viewed or the most relevant movies. This is a trivial task, done without any machine learning techniques. So, we
+will try different number of ratings and see at which point personalized recommendations become decent.
+
+-----------------------------------------------------------------------------------------------------------------------
+
+# Time for this project is over!
+
+It's been 3 weeks of work, and now I ran into a bug I can't find. Model _m7_ takes into account only mean ratings, and
+it ignores genres almost at all. On the other hand, if I shuffle users, predictions get worse. I'm confused, and I can't
+spend more time on this project trying to figure out what's wrong. The implicit goal of this project was to learn
+Tensorflow, Keras and big data. I've got a ton of experience, but now this project has become a waste of time. It's very
+disappointing that I drop it in the very end, but that's the dead end. I better spend my time learning theory and
+watching how other people implement recommenders. I'll be back in next projects with more expertise.
+
+-----------------------------------------------------------------------------------------------------------------------
+
 # References
 
 * Jesse Vig Shilad Sen and John Riedl. 2012. The Tag Genome: Encoding Community Knowledge to Support Novel Interaction.

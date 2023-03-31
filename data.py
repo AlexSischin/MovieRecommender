@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 import string
 
 import nltk
@@ -498,3 +499,19 @@ def load_samples(dim: int, train_sample_size: int, dev_sample_size: int, test_sa
         def_sample_df = pd.read_hdf(store, dev_key, where=dev_ids)
         test_sample_df = pd.read_hdf(store, test_key, where=test_ids)
     return train_sample_df, def_sample_df, test_sample_df
+
+
+def generate_custom_user(ratings_df: pd.DataFrame) -> pd.DataFrame:
+    movie_df = read_parquet(train_movie_features_path)
+    meta_df = read_parquet(train_meta_path)
+    movie_df = pd.concat([movie_df, meta_df], axis=1)
+    movie_df.drop_duplicates(subset=['movieId'], inplace=True)
+    user_df = ratings_df.merge(movie_df, how='left', on='movieId')
+    genre_columns = [c for c in movie_df if re.match(r'genre_.+', c)]
+    user_df = user_df[genre_columns].mul(user_df['rating'], axis=0)
+    user_df.columns = [f'{c}_mean_rating' for c in user_df.columns]
+    user_df.replace(0, np.NaN, inplace=True)
+    user_df = user_df.mean()
+    mean_rating = 3.5303502082824707
+    user_df.replace(np.NaN, mean_rating, inplace=True)
+    return user_df
